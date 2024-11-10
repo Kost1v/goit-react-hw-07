@@ -1,10 +1,9 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import css from "./ContactForm.module.css";
-import { nanoid } from "nanoid";
 
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsSlice";
+import { addContact } from "../../redux/contactsOps";
 
 const phoneNumberRegex =
   /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
@@ -25,62 +24,57 @@ const AddProfileSchema = Yup.object({
 const INITIAL_VALUES = {
   name: "",
   number: "",
-  id: "",
 };
 
 const ContactForm = () => {
   const dispatch = useDispatch();
 
-  const onAddProfile = (values, actions) => {
-    const finalContacts = {
-      ...values,
-      id: nanoid(),
-    };
-
-    const action = addContact(finalContacts);
-    dispatch(action);
+  const onAddProfile = (contact, actions) => {
+    dispatch(addContact(contact));
 
     actions.resetForm();
   };
 
   return (
-    <Formik
-      initialValues={INITIAL_VALUES}
-      validationSchema={AddProfileSchema}
-      onSubmit={onAddProfile}
-    >
-      <Form className={css.form}>
-        <label className={css.label}>
-          <span>Name:</span>
-          <Field
-            type="text"
-            name="name"
-            className={css.input}
-            placeholder="Ivan Ivanov"
-          />
-          <ErrorMessage
-            className={css.errorMessage}
-            name="name"
-            component="span"
-          />
-        </label>
-        <label className={css.label}>
-          <span>Number:</span>
-          <Field
-            className={css.input}
-            type="text"
-            name="number"
-            placeholder="+38xxxxxxxxxx"
-          />
-          <ErrorMessage
-            name="number"
-            component="span"
-            className={css.errorMessage}
-          />
-        </label>
-        <button type="submit">🤷‍♂️ Add Profile</button>
-      </Form>
-    </Formik>
+    <div>
+      <Formik
+        initialValues={INITIAL_VALUES}
+        validationSchema={AddProfileSchema}
+        onSubmit={onAddProfile}
+      >
+        <Form className={css.form}>
+          <label className={css.label}>
+            <span>Name:</span>
+            <Field
+              type="text"
+              name="name"
+              className={css.input}
+              placeholder="Ivan Ivanov"
+            />
+            <ErrorMessage
+              className={css.errorMessage}
+              name="name"
+              component="span"
+            />
+          </label>
+          <label className={css.label}>
+            <span>Number:</span>
+            <Field
+              className={css.input}
+              type="text"
+              name="number"
+              placeholder="+38xxxxxxxxxx"
+            />
+            <ErrorMessage
+              name="number"
+              component="span"
+              className={css.errorMessage}
+            />
+          </label>
+          <button type="submit">🤷‍♂️ Add Profile</button>
+        </Form>
+      </Formik>
+    </div>
   );
 };
 
